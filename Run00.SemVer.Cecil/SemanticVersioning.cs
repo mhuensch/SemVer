@@ -10,24 +10,65 @@ namespace Run00.SemVer.Cecil
 {
 	public class SemanticVersioning : ISemanticVersioning
 	{
-		void ISemanticVersioning.UpdateManifest(string manifestFile, string outputDirectory)
+		public SemanticVersioning(IPackageRepository packageRepository, IPackageManager packageManager)
 		{
-			throw new NotImplementedException();
+			_packageRepository = packageRepository;
+			_packageManager = packageManager;
 		}
 
-		private IEnumerable<string> InstallPackageFiles(IPackage package, params string[] sources)
+		VersionChange ISemanticVersioning.Calculate(IEnumerable<string> assemblies, string packageId)
 		{
-			var packageManager = new PackageManager(
-				new AggregateRepository(PackageRepositoryFactory.Default,
-					sources,
-					ignoreFailingRepositories: true
-				),
-				_outputFoler
-			);
+			var currentTypes = GetAssemblyTypes(assemblies);
 
-			packageManager.InstallPackage(package, true, false);
+			var previousPackage = GetPreviousPackage(packageId);
+			var previousAssemblies = GetAssemblies(previousPackage);
+			var previousTypes = GetAssemblyTypes(previousAssemblies);
 
-			return package.AssemblyReferences.Select(a => Path.Combine(_outputFoler, package.Id + "." + package.Version, a.Path));
+			var changes = GetChanges(currentTypes, previousTypes);
+			var newVersion = GetNewVersion(changes, previousPackage.Version.Version);
+
+			return new VersionChange()
+			{
+				Justification = changes,
+				Previous = previousPackage.Version.Version,
+				New = newVersion
+			};
+
+			//var manifest = Manifest.ReadFrom("path here");
+			//manifest.Save()
+
+			//var nupkgFile = new FileInfo(nupkg);
+
+			//var currentPackage = new ZipPackage(nupkgFile.FullName);
+			//var currentAssemblies = InstallPackageFiles(currentPackage, nupkgFile.Directory.FullName);
+
+			//var version = GetNewVersion(changeCount, previousPackage.Version.Version);
+
+			//ZipFile.ExtractToDirectory(nupkgFile.FullName, "Extracted");
+			//TODO: Repack File with new version
+		}
+
+		private IPackage GetPreviousPackage(string packageId)
+		{
+			return _packageRepository.GetPackages()
+				.Where(p => string.Compare(p.Id, packageId, StringComparison.InvariantCultureIgnoreCase) == 0)
+				.OrderBy(p => p.Version)
+				.LastOrDefault();
+		}
+
+		private IEnumerable<string> GetAssemblies(IPackage package)
+		{
+			if (package == null)
+				return Enumerable.Empty<string>();
+
+			var previousPackageDir = _packageManager.PathResolver.GetPackageDirectory(package);
+
+			if (_packageManager.FileSystem.DirectoryExists(previousPackageDir) == false)
+				_packageManager.InstallPackage(package, true, false);
+
+			var fullDir = _packageManager.FileSystem.GetFullPath(previousPackageDir);
+			var previousAssemblies = package.AssemblyReferences.Select(a => Path.Combine(fullDir, a.Path));
+			return previousAssemblies;
 		}
 
 		private IEnumerable<TypeDefinition> GetAssemblyTypes(IEnumerable<string> assemblies)
@@ -35,24 +76,11 @@ namespace Run00.SemVer.Cecil
 			var result = new List<TypeDefinition>();
 			foreach (var assemblyPath in assemblies)
 			{
-				var assembly = AssemblyLoader.LoadCecilAssembly(assemblyPath);
+				var file = new FileInfo(assemblyPath);
+				var assembly = AssemblyLoader.LoadCecilAssembly(file.FullName);
 				result.AddRange(QueryAggregator.PublicApiQueries.ExeuteAndAggregateTypeQueries(assembly));
 			}
 			return result;
-		}
-
-		private IPackage FindPreviousPackage(IPackage currentPackage)
-		{
-			var packages = new List<IPackage>();
-			foreach (var source in _sources)
-			{
-				var sourceRepository = PackageRepositoryFactory.Default.CreateRepository(source);
-				var package = sourceRepository
-					.GetPackages()
-					.Where(p => string.Compare(p.Id, currentPackage.Id, StringComparison.InvariantCultureIgnoreCase) == 0);
-				packages.AddRange(package);
-			}
-			return packages.OrderBy(p => p.Version).LastOrDefault();
 		}
 
 		private Differences GetChanges(IEnumerable<TypeDefinition> currentTypes, IEnumerable<TypeDefinition> previousTypes)
@@ -61,7 +89,7 @@ namespace Run00.SemVer.Cecil
 
 			//Add all new and removed types to the collection
 			var newDefs = currentTypes
-				.Where(c => previousTypes.Any(p => p.IsEqual(c)) == false)
+				.Where(c => previousTypes.Any(p => p.Name.Equals(c.Name) && p.Namespace.Equals(c.Namespace)) == false)
 				.Select(t => t.Name);
 			collection.AddedTypes.AddRange(newDefs);
 
@@ -88,24 +116,24 @@ namespace Run00.SemVer.Cecil
 			return collection;
 		}
 
-		private Version GetNewVersion(Differences diff, Version currentVersion)
+		private Version GetNewVersion(Differences diff, Version previousVersion)
 		{
 			if (diff.RemovedTypes.Count > 0)
-				return new Version(currentVersion.Major + 1, 0, 0, 0);
+				return new Version(previousVersion.Major + 1, 0, 0, 0);
 
 			if (diff.ChangedTypes.Count > 0)
-				return new Version(currentVersion.Major + 1, 0, 0, 0);
+				return new Version(previousVersion.Major + 1, 0, 0, 0);
 
 			if (diff.AddedTypes.Count > 0)
-				return new Version(currentVersion.Major, currentVersion.Minor + 1, 0, 0);
+				return new Version(previousVersion.Major, previousVersion.Minor + 1, 0, 0);
 
 			if (diff.UpdatedTypes.Count > 0)
-				return new Version(currentVersion.Major, currentVersion.Minor + 1, 0, 0);
+				return new Version(previousVersion.Major, previousVersion.Minor + 1, 0, 0);
 
-			return new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build + 1, 0);
+			return new Version(previousVersion.Major, previousVersion.Minor, previousVersion.Build + 1, 0);
 		}
 
-		private readonly string _outputFoler = "Packages";
-		private readonly string[] _sources;
+		private readonly IPackageRepository _packageRepository;
+		private readonly IPackageManager _packageManager;
 	}
 }

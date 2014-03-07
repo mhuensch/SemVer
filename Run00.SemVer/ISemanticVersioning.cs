@@ -1,8 +1,9 @@
-﻿
+﻿using System.Collections.Generic;
+
 namespace Run00.SemVer
 {
 	public interface ISemanticVersioning
 	{
-		void UpdateManifest(string manifestFile, string outputDirectory);
+		VersionChange Calculate(IEnumerable<string> assemblies, string packageId);
 	}
 }

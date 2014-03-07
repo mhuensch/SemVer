@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{81C54433-43E2-48CB-8B84-DB7933B00218}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{A42E00F4-0FEF-45AC-872E-377C31018CAD}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Run00.SemVer</RootNamespace>
-    <AssemblyName>Run00.SemVer</AssemblyName>
+    <RootNamespace>Run00.SemVer.Console</RootNamespace>
+    <AssemblyName>Run00.SemVer.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -39,10 +41,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Differences.cs" />
-    <Compile Include="ISemanticVersioning.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VersionChange.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Run00.SemVer.Cecil\Run00.SemVer.Cecil.csproj">
+      <Project>{3613acb9-e516-40ab-8d18-f3b8e05c5086}</Project>
+      <Name>Run00.SemVer.Cecil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Run00.SemVer\Run00.SemVer.csproj">
+      <Project>{81c54433-43e2-48cb-8b84-db7933b00218}</Project>
+      <Name>Run00.SemVer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
