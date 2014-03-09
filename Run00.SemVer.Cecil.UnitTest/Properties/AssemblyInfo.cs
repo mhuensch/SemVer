@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Run00.Roslyn.Integration.ControlGroup")]
+[assembly: AssemblyTitle("Run00.SemVer.Cecil.UnitTest")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Run00.Roslyn.Integration.ControlGroup")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyProduct("Run00.SemVer.Cecil.UnitTest")]
+[assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a31b9323-4c37-4b5e-a662-2a62339117e9")]
+[assembly: Guid("687dee73-9a40-4b58-9730-b8ca434a75e6")]
 
 // Version information for an assembly consists of the following four values:
 //

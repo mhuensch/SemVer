@@ -1,14 +1,13 @@
-﻿extern alias Adding;
+﻿extern alias AddingClass;
 extern alias AddingMethod;
-extern alias ChangeVersion;
-extern alias Comments;
+extern alias ChangingComments;
 extern alias ControlGroup;
-extern alias Deleted;
-extern alias Generic;
-extern alias Modifying;
-extern alias Namespace;
-extern alias Private;
-extern alias Refactor;
+extern alias DeletingClass;
+extern alias ChangingGenericType;
+extern alias ChangingMethodSignature;
+extern alias ChangingNamespace;
+extern alias AddingPrivateMethod;
+extern alias RefactoringMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NuGet;
 using Run00.MsTest;
@@ -25,7 +24,7 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(Refactor::Run00.TestSample.Order).Assembly.Location;
+			var testSample = typeof(RefactoringMethod::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
 			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
@@ -40,7 +39,7 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(Comments::Run00.TestSample.Order).Assembly.Location;
+			var testSample = typeof(ChangingComments::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
 			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
@@ -55,7 +54,7 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(Deleted::Run00.TestSample.Order).Assembly.Location;
+			var testSample = typeof(DeletingClass::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
 			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
@@ -70,7 +69,7 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(Adding::Run00.TestSample.Order).Assembly.Location;
+			var testSample = typeof(AddingClass::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
 			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
@@ -100,7 +99,7 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(Modifying::Run00.TestSample.Order).Assembly.Location;
+			var testSample = typeof(ChangingMethodSignature::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
 			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
@@ -115,7 +114,7 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(Namespace::Run00.NewNamespace.Order).Assembly.Location;
+			var testSample = typeof(ChangingNamespace::Run00.NewNamespace.Order).Assembly.Location;
 
 			//Act
 			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
@@ -130,7 +129,7 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(Generic::Run00.TestSample.Order).Assembly.Location;
+			var testSample = typeof(ChangingGenericType::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
 			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
@@ -145,7 +144,7 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(Private::Run00.TestSample.Order).Assembly.Location;
+			var testSample = typeof(AddingPrivateMethod::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
 			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");

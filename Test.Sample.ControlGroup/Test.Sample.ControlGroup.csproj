@@ -7,7 +7,7 @@
     <ProjectGuid>{208A31A9-FEAD-482E-8FFA-AC5494106C6F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test.Sample.ControlGroup</RootNamespace>
+    <RootNamespace>Test.Sample</RootNamespace>
     <AssemblyName>Test.Sample.ControlGroup</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

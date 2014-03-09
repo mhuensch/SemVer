@@ -76,12 +76,12 @@ namespace Run00.SemVer.Cecil
 				result.TypeDefinitions.AddRange(types);
 
 				foreach (var type in types)
-					Add(type, result);
+					AddExposedTypes(type, result);
 			}
 			return result;
 		}
 
-		public PackageDefinition Add(TypeDefinition type, PackageDefinition package)
+		public PackageDefinition AddExposedTypes(TypeDefinition type, PackageDefinition package)
 		{
 			var exposedTypes = new List<TypeDefinition>();
 
@@ -100,7 +100,7 @@ namespace Run00.SemVer.Cecil
 			package.TypeDefinitions.AddRange(exposedTypes.Distinct());
 
 			foreach (var t in exposedTypes)
-				Add(t, package);
+				AddExposedTypes(t, package);
 
 			return package;
 		}
