@@ -89,9 +89,60 @@
       <Project>{81c54433-43e2-48cb-8b84-db7933b00218}</Project>
       <Name>Run00.SemVer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.AddingMethod\Test.Sample.AddingMethod.csproj">
+      <Project>{6b61e389-ab62-4291-a321-70812da7106b}</Project>
+      <Name>Test.Sample.AddingMethod</Name>
+      <Aliases>AddingMethod</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.Adding\Test.Sample.Adding.csproj">
+      <Project>{f1bf062f-0023-481c-90bf-ec02591b76f9}</Project>
+      <Name>Test.Sample.Adding</Name>
+      <Aliases>Adding</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.ChangeVersion\Test.Sample.ChangeVersion.csproj">
+      <Project>{70e68751-b0f1-4f18-9416-977cac51fbc0}</Project>
+      <Name>Test.Sample.ChangeVersion</Name>
+      <Aliases>ChangeVersion</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.Comments\Test.Sample.Comments.csproj">
+      <Project>{9fb56d4e-73e8-4482-9a05-786227117c72}</Project>
+      <Name>Test.Sample.Comments</Name>
+      <Aliases>Comments</Aliases>
+    </ProjectReference>
     <ProjectReference Include="..\Test.Sample.ControlGroup\Test.Sample.ControlGroup.csproj">
       <Project>{208a31a9-fead-482e-8ffa-ac5494106c6f}</Project>
       <Name>Test.Sample.ControlGroup</Name>
+      <Aliases>ControlGroup</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.Deleted\Test.Sample.Deleted.csproj">
+      <Project>{e70bf146-1938-40dc-9a74-4f496c0b1297}</Project>
+      <Name>Test.Sample.Deleted</Name>
+      <Aliases>Deleted</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.Generic\Test.Sample.Generic.csproj">
+      <Project>{3ac5ccf2-80d2-42fd-bb11-d9a407f64f31}</Project>
+      <Name>Test.Sample.Generic</Name>
+      <Aliases>Generic</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.Modifying\Test.Sample.Modifying.csproj">
+      <Project>{83b09d61-41db-4f9e-bbd8-df4d2ac188b4}</Project>
+      <Name>Test.Sample.Modifying</Name>
+      <Aliases>Modifying</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.Namespace\Test.Sample.Namespace.csproj">
+      <Project>{04f5f7ec-1cc0-4b9a-a99c-9281df138f85}</Project>
+      <Name>Test.Sample.Namespace</Name>
+      <Aliases>Namespace</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.Private\Test.Sample.Private.csproj">
+      <Project>{bab1363c-bf09-4179-a3b6-2384cfccd954}</Project>
+      <Name>Test.Sample.Private</Name>
+      <Aliases>Private</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.Refactor\Test.Sample.Refactor.csproj">
+      <Project>{711025a1-8c0b-4e5d-92ee-7937fdad8fe0}</Project>
+      <Name>Test.Sample.Refactor</Name>
+      <Aliases>Refactor</Aliases>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

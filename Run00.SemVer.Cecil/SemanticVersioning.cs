@@ -1,5 +1,4 @@
-﻿using ApiChange.Api.Introspection;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using NuGet;
 using System;
 using System.Collections.Generic;
@@ -10,45 +9,39 @@ namespace Run00.SemVer.Cecil
 {
 	public class SemanticVersioning : ISemanticVersioning
 	{
-		public SemanticVersioning(IPackageRepository packageRepository, IPackageManager packageManager)
+		public SemanticVersioning(IPackageRepository packageRepository, IPackageManager packageManager, IContractComparer comparer)
 		{
 			_packageRepository = packageRepository;
 			_packageManager = packageManager;
+			_comparer = comparer;
 		}
 
 		VersionChange ISemanticVersioning.Calculate(IEnumerable<string> assemblies, string packageId)
 		{
-			var currentTypes = GetAssemblyTypes(assemblies);
+			var neoDefinitions = GetPackageDefinition(assemblies);
 
-			var previousPackage = GetPreviousPackage(packageId);
-			var previousAssemblies = GetAssemblies(previousPackage);
-			var previousTypes = GetAssemblyTypes(previousAssemblies);
+			var paleoPackage = GetLatestPackage(packageId);
+			var paleoAssemblies = GetAssemblies(paleoPackage);
+			var paleoDefinitions = GetPackageDefinition(paleoAssemblies);
 
-			var changes = GetChanges(currentTypes, previousTypes);
-			var newVersion = GetNewVersion(changes, previousPackage.Version.Version);
+
+			var changes = GetDifferences(neoDefinitions, paleoDefinitions);
+			var newVersion = GetNewVersion(changes, paleoPackage.Version.Version);
 
 			return new VersionChange()
 			{
-				Justification = changes,
-				Previous = previousPackage.Version.Version,
+				Differences = changes,
+				Old = paleoPackage.Version.Version,
 				New = newVersion
 			};
 
 			//var manifest = Manifest.ReadFrom("path here");
 			//manifest.Save()
-
-			//var nupkgFile = new FileInfo(nupkg);
-
 			//var currentPackage = new ZipPackage(nupkgFile.FullName);
-			//var currentAssemblies = InstallPackageFiles(currentPackage, nupkgFile.Directory.FullName);
-
-			//var version = GetNewVersion(changeCount, previousPackage.Version.Version);
-
 			//ZipFile.ExtractToDirectory(nupkgFile.FullName, "Extracted");
-			//TODO: Repack File with new version
 		}
 
-		private IPackage GetPreviousPackage(string packageId)
+		private IPackage GetLatestPackage(string packageId)
 		{
 			return _packageRepository.GetPackages()
 				.Where(p => string.Compare(p.Id, packageId, StringComparison.InvariantCultureIgnoreCase) == 0)
@@ -61,78 +54,101 @@ namespace Run00.SemVer.Cecil
 			if (package == null)
 				return Enumerable.Empty<string>();
 
-			var previousPackageDir = _packageManager.PathResolver.GetPackageDirectory(package);
+			var dir = _packageManager.PathResolver.GetPackageDirectory(package);
 
-			if (_packageManager.FileSystem.DirectoryExists(previousPackageDir) == false)
+			if (_packageManager.FileSystem.DirectoryExists(dir) == false)
 				_packageManager.InstallPackage(package, true, false);
 
-			var fullDir = _packageManager.FileSystem.GetFullPath(previousPackageDir);
-			var previousAssemblies = package.AssemblyReferences.Select(a => Path.Combine(fullDir, a.Path));
-			return previousAssemblies;
+			var fullDir = _packageManager.FileSystem.GetFullPath(dir);
+			var assemblies = package.AssemblyReferences.Select(a => Path.Combine(fullDir, a.Path));
+			return assemblies;
 		}
 
-		private IEnumerable<TypeDefinition> GetAssemblyTypes(IEnumerable<string> assemblies)
+		private PackageDefinition GetPackageDefinition(IEnumerable<string> assemblies)
 		{
-			var result = new List<TypeDefinition>();
+			var result = new PackageDefinition();
 			foreach (var assemblyPath in assemblies)
 			{
 				var file = new FileInfo(assemblyPath);
-				var assembly = AssemblyLoader.LoadCecilAssembly(file.FullName);
-				result.AddRange(QueryAggregator.PublicApiQueries.ExeuteAndAggregateTypeQueries(assembly));
+
+				var assembly = AssemblyDefinition.ReadAssembly(file.FullName);
+				var types = assembly.Modules.SelectMany(m => m.Types).Where(t => t.IsPublic);
+				result.TypeDefinitions.AddRange(types);
+
+				foreach (var type in types)
+					Add(type, result);
 			}
 			return result;
 		}
 
-		private Differences GetChanges(IEnumerable<TypeDefinition> currentTypes, IEnumerable<TypeDefinition> previousTypes)
+		public PackageDefinition Add(TypeDefinition type, PackageDefinition package)
 		{
-			var collection = new Differences();
+			var exposedTypes = new List<TypeDefinition>();
 
-			//Add all new and removed types to the collection
-			var newDefs = currentTypes
-				.Where(c => previousTypes.Any(p => p.Name.Equals(c.Name) && p.Namespace.Equals(c.Namespace)) == false)
-				.Select(t => t.Name);
-			collection.AddedTypes.AddRange(newDefs);
+			var methods = type.Methods.Where(m => m.IsPublic);
+			exposedTypes.AddRange(methods
+				.SelectMany(m => m.Parameters.Select(p => p.ParameterType.Resolve()).Union(new[] { m.ReturnType.Resolve() }))
+				.Where(m => m != null && package.TypeDefinitions.Select(t => t.FullName).Contains(m.FullName) == false));
+			package.MethodDefinitions.AddRange(methods);
 
-			var removedDefs = previousTypes
-				.Where(p => currentTypes.Any(c => c.IsEqual(p)) == false)
-				.Select(t => t.Name);
-			collection.RemovedTypes.AddRange(removedDefs);
+			var fields = type.Fields.Where(m => m.IsPublic);
+			exposedTypes.AddRange(fields
+				.Select(m => m.FieldType.Resolve())
+				.Where(m => m != null && package.TypeDefinitions.Select(t => t.FullName).Contains(m.FullName) == false));
+			package.FieldDefinitions.AddRange(fields);
 
-			//Add changed types
-			foreach (TypeDefinition previousType in previousTypes)
-			{
-				var currentType = currentTypes.Where(c => c.IsEqual(previousType)).FirstOrDefault();
-				if (currentType == null)
-					continue;
+			package.TypeDefinitions.AddRange(exposedTypes.Distinct());
 
-				var typeDiff = TypeDiff.GenerateDiff(previousType, currentType, QueryAggregator.PublicApiQueries);
+			foreach (var t in exposedTypes)
+				Add(t, package);
 
-				if (TypeDiff.None == typeDiff)
-					continue;
-
-				collection.ChangedTypes.Add(typeDiff.TypeV1.Name);
-			}
-
-			return collection;
+			return package;
 		}
 
-		private Version GetNewVersion(Differences diff, Version previousVersion)
+		private List<Difference> GetDifferences(PackageDefinition neoPackage, PackageDefinition paleoPackage)
 		{
-			if (diff.RemovedTypes.Count > 0)
-				return new Version(previousVersion.Major + 1, 0, 0, 0);
+			var result = new List<Difference>();
+			var neos = GetDefs(neoPackage);
+			var paleos = GetDefs(paleoPackage);
 
-			if (diff.ChangedTypes.Count > 0)
-				return new Version(previousVersion.Major + 1, 0, 0, 0);
+			var addedKeys = neos.Keys.Where(c => paleos.Keys.Contains(c) == false);
+			result.AddRange(
+				from k in addedKeys
+				let m = neos[k]
+				select new Difference() { Name = m.FullName, Reason = Difference.ChangeReason.Added });
 
-			if (diff.AddedTypes.Count > 0)
-				return new Version(previousVersion.Major, previousVersion.Minor + 1, 0, 0);
+			var removedKeys = paleos.Keys.Where(c => neos.Keys.Contains(c) == false);
+			result.AddRange(
+				from k in removedKeys
+				let m = paleos[k]
+				select new Difference() { Name = m.FullName, Reason = Difference.ChangeReason.Removed });
 
-			if (diff.UpdatedTypes.Count > 0)
-				return new Version(previousVersion.Major, previousVersion.Minor + 1, 0, 0);
+			//var matchingKeys = paleos.Keys.Where(c => neos.Keys.Contains(c));
+			//result.AddRange(matchingKeys.SelectMany(k => _comparer.Compare(neos[k], paleos[k])));
 
-			return new Version(previousVersion.Major, previousVersion.Minor, previousVersion.Build + 1, 0);
+			return result;
 		}
 
+		private Dictionary<string, IMemberDefinition> GetDefs(PackageDefinition package)
+		{
+			return package
+				.TypeDefinitions.Cast<IMemberDefinition>()
+				.Union(package.MethodDefinitions.Cast<IMemberDefinition>())
+				.ToDictionary(t => t.FullName, t => t);
+		}
+
+		private Version GetNewVersion(IEnumerable<Difference> diff, Version paleoVersion)
+		{
+			if (diff.Where(d => d.Reason == Difference.ChangeReason.Removed).Any())
+				return new Version(paleoVersion.Major + 1, 0, 0, 0);
+
+			if (diff.Where(d => d.Reason == Difference.ChangeReason.Added).Any())
+				return new Version(paleoVersion.Major, paleoVersion.Minor + 1, 0, 0);
+
+			return new Version(paleoVersion.Major, paleoVersion.Minor, paleoVersion.Build + 1, 0);
+		}
+
+		private readonly IContractComparer _comparer;
 		private readonly IPackageRepository _packageRepository;
 		private readonly IPackageManager _packageManager;
 	}

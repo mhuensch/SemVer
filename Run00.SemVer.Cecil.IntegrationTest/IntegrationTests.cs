@@ -1,4 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿extern alias Adding;
+extern alias AddingMethod;
+extern alias ChangeVersion;
+extern alias Comments;
+extern alias ControlGroup;
+extern alias Deleted;
+extern alias Generic;
+extern alias Modifying;
+extern alias Namespace;
+extern alias Private;
+extern alias Refactor;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NuGet;
 using Run00.MsTest;
 using System.IO;
@@ -14,10 +25,10 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(TestSample.IOrderService).Assembly.Location;
+			var testSample = typeof(Refactor::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
-			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.Refactor");
+			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
 
 			//Assert
 			//Assert.AreEqual(ContractChangeType.Refactor, result.Justification.ChangeType);
@@ -29,10 +40,10 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(TestSample.IOrderService).Assembly.Location;
+			var testSample = typeof(Comments::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
-			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.Comments");
+			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
 
 			//Assert
 			//Assert.AreEqual(ContractChangeType.Cosmetic, result.Justification.ChangeType);
@@ -44,10 +55,10 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(TestSample.IOrderService).Assembly.Location;
+			var testSample = typeof(Deleted::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
-			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.Deleted");
+			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
 
 			//Assert
 			//Assert.AreEqual(ContractChangeType.Breaking, result.Justification.ChangeType);
@@ -59,10 +70,25 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(TestSample.IOrderService).Assembly.Location;
+			var testSample = typeof(Adding::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
-			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.Adding");
+			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
+
+			//Assert
+			//Assert.AreEqual(ContractChangeType.Enhancement, result.Justification.ChangeType);
+			Assert.AreEqual("1.1.0.0", result.New.ToString());
+		}
+
+		[TestMethod, CategorizeByConvention]
+		public void WhenMethodIsAdded_ShouldBeEnhancement()
+		{
+			//Arrange
+			var versioning = BuildVersioning();
+			var testSample = typeof(AddingMethod::Run00.TestSample.Order).Assembly.Location;
+
+			//Act
+			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
 
 			//Assert
 			//Assert.AreEqual(ContractChangeType.Enhancement, result.Justification.ChangeType);
@@ -74,10 +100,10 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(TestSample.IOrderService).Assembly.Location;
+			var testSample = typeof(Modifying::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
-			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.Modifying");
+			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
 
 			//Assert
 			//Assert.AreEqual(ContractChangeType.Breaking, result.Justification.ChangeType);
@@ -89,10 +115,10 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(TestSample.IOrderService).Assembly.Location;
+			var testSample = typeof(Namespace::Run00.NewNamespace.Order).Assembly.Location;
 
 			//Act
-			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.Namespace");
+			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
 
 			//Assert
 			//Assert.AreEqual(ContractChangeType.Breaking, result.Justification.ChangeType);
@@ -104,10 +130,10 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(TestSample.IOrderService).Assembly.Location;
+			var testSample = typeof(Generic::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
-			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.Generic");
+			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
 
 			//Assert
 			//Assert.AreEqual(ContractChangeType.Breaking, result.Justification.ChangeType);
@@ -119,10 +145,10 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 		{
 			//Arrange
 			var versioning = BuildVersioning();
-			var testSample = typeof(TestSample.IOrderService).Assembly.Location;
+			var testSample = typeof(Private::Run00.TestSample.Order).Assembly.Location;
 
 			//Act
-			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.Private");
+			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
 
 			//Assert
 			//Assert.AreEqual(ContractChangeType.Refactor, result.Justification.ChangeType);
@@ -134,7 +160,9 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 			var currentDir = Directory.GetCurrentDirectory();
 			var packageRepository = PackageRepositoryFactory.Default.CreateRepository(currentDir);
 			var packageManager = new PackageManager(packageRepository, Path.GetTempPath());
-			var versioning = (ISemanticVersioning)new SemanticVersioning(packageRepository, packageManager);
+			var comparer = new ContractComparer();
+
+			var versioning = (ISemanticVersioning)new SemanticVersioning(packageRepository, packageManager, comparer);
 			return versioning;
 		}
 	}
