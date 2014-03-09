@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Run00.TestSample
 {
 	public class OrderService : IOrderService
 	{
+		public enum OrderType { None, Customer, Business }
+
 		public IEnumerable<Order> GetOrders(int modified)
 		{
 			modified.ToString();

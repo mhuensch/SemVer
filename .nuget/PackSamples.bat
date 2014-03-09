@@ -1,11 +1,3 @@
-Nuget pack ..\Test.Sample.Adding\Test.Sample.Adding.csproj -OutputDirectory ..\Run00.SemVer.Cecil.IntegrationTest\Artifacts
-Nuget pack ..\Test.Sample.AddingMethod\Test.Sample.AddingMethod.csproj -OutputDirectory ..\Run00.SemVer.Cecil.IntegrationTest\Artifacts
-Nuget pack ..\Test.Sample.ChangeVersion\Test.Sample.ChangeVersion.csproj -OutputDirectory ..\Run00.SemVer.Cecil.IntegrationTest\Artifacts
-Nuget pack ..\Test.Sample.Comments\Test.Sample.Comments.csproj -OutputDirectory ..\Run00.SemVer.Cecil.IntegrationTest\Artifacts
-Nuget pack ..\Test.Sample.ControlGroup\Test.Sample.ControlGroup.csproj -OutputDirectory ..\Run00.SemVer.Cecil.IntegrationTest\Artifacts
-Nuget pack ..\Test.Sample.Deleted\Test.Sample.Deleted.csproj -OutputDirectory ..\Run00.SemVer.Cecil.IntegrationTest\Artifacts
-Nuget pack ..\Test.Sample.Generic\Test.Sample.Generic.csproj -OutputDirectory ..\Run00.SemVer.Cecil.IntegrationTest\Artifacts
-Nuget pack ..\Test.Sample.Modifying\Test.Sample.Modifying.csproj -OutputDirectory ..\Run00.SemVer.Cecil.IntegrationTest\Artifacts
-Nuget pack ..\Test.Sample.Namespace\Test.Sample.Namespace.csproj -OutputDirectory ..\Run00.SemVer.Cecil.IntegrationTest\Artifacts
-Nuget pack ..\Test.Sample.Private\Test.Sample.Private.csproj -OutputDirectory ..\Run00.SemVer.Cecil.IntegrationTest\Artifacts
-Nuget pack ..\Test.Sample.Refactor\Test.Sample.Refactor.csproj -OutputDirectory ..\Run00.SemVer.Cecil.IntegrationTest\Artifacts
+cd ..
+for /f %%d in ('dir /od /a-d /b /s Test.Sample.*.csproj') do .nuget\Nuget.exe pack %%d -OutputDirectory Run00.SemVer.Cecil.IntegrationTest\Artifacts
+cd .nuget

@@ -9,11 +9,10 @@ namespace Run00.SemVer.Cecil
 {
 	public class SemanticVersioning : ISemanticVersioning
 	{
-		public SemanticVersioning(IPackageRepository packageRepository, IPackageManager packageManager, IContractComparer comparer)
+		public SemanticVersioning(IPackageRepository packageRepository, IPackageManager packageManager)
 		{
 			_packageRepository = packageRepository;
 			_packageManager = packageManager;
-			_comparer = comparer;
 		}
 
 		VersionChange ISemanticVersioning.Calculate(IEnumerable<string> assemblies, string packageId)
@@ -24,6 +23,8 @@ namespace Run00.SemVer.Cecil
 			var paleoAssemblies = GetAssemblies(paleoPackage);
 			var paleoDefinitions = GetPackageDefinition(paleoAssemblies);
 
+			var types = paleoDefinitions.TypeDefinitions.Where(t => t.Namespace.StartsWith("System") == false);
+			var types2 = neoDefinitions.TypeDefinitions.Where(t => t.Namespace.StartsWith("System") == false);
 
 			var changes = GetDifferences(neoDefinitions, paleoDefinitions);
 			var newVersion = GetNewVersion(changes, paleoPackage.Version.Version);
@@ -97,6 +98,13 @@ namespace Run00.SemVer.Cecil
 				.Where(m => m != null && package.TypeDefinitions.Select(t => t.FullName).Contains(m.FullName) == false));
 			package.FieldDefinitions.AddRange(fields);
 
+			var nested = type.NestedTypes.Where(m => m.IsNestedPublic);
+			exposedTypes.AddRange(nested
+				.Select(m => m.Resolve())
+				.Where(m => m != null && package.TypeDefinitions.Select(t => t.FullName).Contains(m.FullName) == false));
+			package.TypeDefinitions.AddRange(nested);
+
+			//TODO: make the inclusion or exclusion of system a feature.
 			package.TypeDefinitions.AddRange(exposedTypes.Distinct());
 
 			foreach (var t in exposedTypes)
@@ -123,9 +131,6 @@ namespace Run00.SemVer.Cecil
 				let m = paleos[k]
 				select new Difference() { Name = m.FullName, Reason = Difference.ChangeReason.Removed });
 
-			//var matchingKeys = paleos.Keys.Where(c => neos.Keys.Contains(c));
-			//result.AddRange(matchingKeys.SelectMany(k => _comparer.Compare(neos[k], paleos[k])));
-
 			return result;
 		}
 
@@ -134,6 +139,7 @@ namespace Run00.SemVer.Cecil
 			return package
 				.TypeDefinitions.Cast<IMemberDefinition>()
 				.Union(package.MethodDefinitions.Cast<IMemberDefinition>())
+				.Union(package.FieldDefinitions.Cast<IMemberDefinition>())
 				.ToDictionary(t => t.FullName, t => t);
 		}
 
@@ -148,7 +154,6 @@ namespace Run00.SemVer.Cecil
 			return new Version(paleoVersion.Major, paleoVersion.Minor, paleoVersion.Build + 1, 0);
 		}
 
-		private readonly IContractComparer _comparer;
 		private readonly IPackageRepository _packageRepository;
 		private readonly IPackageManager _packageManager;
 	}

@@ -1,12 +1,14 @@
 ﻿extern alias AddingClass;
+extern alias AddingEnum;
 extern alias AddingMethod;
+extern alias AddingPrivateMethod;
+extern alias AddingProperty;
 extern alias ChangingComments;
-extern alias ControlGroup;
-extern alias DeletingClass;
 extern alias ChangingGenericType;
 extern alias ChangingMethodSignature;
 extern alias ChangingNamespace;
-extern alias AddingPrivateMethod;
+extern alias ControlGroup;
+extern alias DeletingClass;
 extern alias RefactoringMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NuGet;
@@ -154,14 +156,51 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 			Assert.AreEqual("1.0.1.0", result.New.ToString());
 		}
 
+		[TestMethod, CategorizeByConvention]
+		public void WhenPropertyIsAdded_ShouldBeEnhancement()
+		{
+			//Arrange
+			var versioning = BuildVersioning();
+			var testSample = typeof(AddingProperty::Run00.TestSample.Order).Assembly.Location;
+
+			//Act
+			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
+
+			//Assert
+			//Assert.AreEqual(ContractChangeType.Refactor, result.Justification.ChangeType);
+			Assert.AreEqual("1.1.0.0", result.New.ToString());
+		}
+
+		[TestMethod, CategorizeByConvention]
+		public void WhenEnumIsAdded_ShouldBeEnhancement()
+		{
+			//Arrange
+			var versioning = BuildVersioning();
+			var testSample = typeof(AddingEnum::Run00.TestSample.Order).Assembly.Location;
+
+			//Act
+			var result = versioning.Calculate(new[] { testSample }, "Test.Sample.ControlGroup");
+
+			//Assert
+			//Assert.AreEqual(ContractChangeType.Refactor, result.Justification.ChangeType);
+			Assert.AreEqual("1.1.0.0", result.New.ToString());
+		}
+
+		[TestCleanup]
+		public void Cleanup()
+		{
+			//This is necessary because the Package Manager does not overwrite the installation folder
+			//and the version of the test packages never changes.
+			Directory.Delete(Path.Combine(Path.GetTempPath(), "NumericTests"), true);
+		}
+
 		private ISemanticVersioning BuildVersioning()
 		{
 			var currentDir = Directory.GetCurrentDirectory();
 			var packageRepository = PackageRepositoryFactory.Default.CreateRepository(currentDir);
-			var packageManager = new PackageManager(packageRepository, Path.GetTempPath());
-			var comparer = new ContractComparer();
+			var packageManager = new PackageManager(packageRepository, Path.Combine(Path.GetTempPath(), "NumericTests"));
 
-			var versioning = (ISemanticVersioning)new SemanticVersioning(packageRepository, packageManager, comparer);
+			var versioning = (ISemanticVersioning)new SemanticVersioning(packageRepository, packageManager);
 			return versioning;
 		}
 	}

@@ -68,16 +68,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Artifacts\Test.Sample.Adding.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.ChangeVersion.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.Comments.1.0.0.0.nupkg" />
+    <None Include="Artifacts\Test.Sample.AddingClass.1.0.0.0.nupkg" />
+    <None Include="Artifacts\Test.Sample.AddingMethod.1.0.0.0.nupkg" />
+    <None Include="Artifacts\Test.Sample.AddingPrivateMethod.1.0.0.0.nupkg" />
+    <None Include="Artifacts\Test.Sample.AddingProperty.1.0.0.0.nupkg" />
+    <None Include="Artifacts\Test.Sample.ChangingComments.1.0.0.0.nupkg" />
+    <None Include="Artifacts\Test.Sample.ChangingGenericType.1.0.0.0.nupkg" />
+    <None Include="Artifacts\Test.Sample.ChangingMethodSignature.1.0.0.0.nupkg" />
+    <None Include="Artifacts\Test.Sample.ChangingNamespace.1.0.0.0.nupkg" />
     <None Include="Artifacts\Test.Sample.ControlGroup.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.Deleted.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.Generic.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.Modifying.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.Namespace.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.Private.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.Refactor.1.0.0.0.nupkg" />
+    <None Include="Artifacts\Test.Sample.DeletingClass.1.0.0.0.nupkg" />
+    <None Include="Artifacts\Test.Sample.RefactoringMethod.1.0.0.0.nupkg" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +95,11 @@
       <Name>Test.Sample.AddingClass</Name>
       <Aliases>AddingClass</Aliases>
     </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.AddingEnum\Test.Sample.AddingEnum.csproj">
+      <Project>{921dfb75-528e-43d0-b1b7-a9ccffbac0c7}</Project>
+      <Name>Test.Sample.AddingEnum</Name>
+      <Aliases>AddingEnum</Aliases>
+    </ProjectReference>
     <ProjectReference Include="..\Test.Sample.AddingMethod\Test.Sample.AddingMethod.csproj">
       <Project>{6b61e389-ab62-4291-a321-70812da7106b}</Project>
       <Name>Test.Sample.AddingMethod</Name>
@@ -103,6 +109,11 @@
       <Project>{bab1363c-bf09-4179-a3b6-2384cfccd954}</Project>
       <Name>Test.Sample.AddingPrivateMethod</Name>
       <Aliases>AddingPrivateMethod</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Sample.AddingProperty\Test.Sample.AddingProperty.csproj">
+      <Project>{ed427617-82e5-4b33-9740-7a66a9a60ab3}</Project>
+      <Name>Test.Sample.AddingProperty</Name>
+      <Aliases>AddingProperty</Aliases>
     </ProjectReference>
     <ProjectReference Include="..\Test.Sample.ChangingComments\Test.Sample.ChangingComments.csproj">
       <Project>{9fb56d4e-73e8-4482-9a05-786227117c72}</Project>

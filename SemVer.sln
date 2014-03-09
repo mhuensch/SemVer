@@ -50,6 +50,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Sample.DeletingClass",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Sample.RefactoringMethod", "Test.Sample.RefactoringMethod\Test.Sample.RefactoringMethod.csproj", "{711025A1-8C0B-4E5D-92EE-7937FDAD8FE0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Sample.AddingProperty", "Test.Sample.AddingProperty\Test.Sample.AddingProperty.csproj", "{ED427617-82E5-4B33-9740-7A66A9A60AB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Sample.AddingEnum", "Test.Sample.AddingEnum\Test.Sample.AddingEnum.csproj", "{921DFB75-528E-43D0-B1B7-A9CCFFBAC0C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +120,14 @@ Global
 		{711025A1-8C0B-4E5D-92EE-7937FDAD8FE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{711025A1-8C0B-4E5D-92EE-7937FDAD8FE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{711025A1-8C0B-4E5D-92EE-7937FDAD8FE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED427617-82E5-4B33-9740-7A66A9A60AB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED427617-82E5-4B33-9740-7A66A9A60AB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED427617-82E5-4B33-9740-7A66A9A60AB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED427617-82E5-4B33-9740-7A66A9A60AB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{921DFB75-528E-43D0-B1B7-A9CCFFBAC0C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{921DFB75-528E-43D0-B1B7-A9CCFFBAC0C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{921DFB75-528E-43D0-B1B7-A9CCFFBAC0C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{921DFB75-528E-43D0-B1B7-A9CCFFBAC0C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -131,5 +143,7 @@ Global
 		{04F5F7EC-1CC0-4B9A-A99C-9281DF138F85} = {0159A132-A3D1-474E-9BC0-90EE78294E9D}
 		{E70BF146-1938-40DC-9A74-4F496C0B1297} = {0159A132-A3D1-474E-9BC0-90EE78294E9D}
 		{711025A1-8C0B-4E5D-92EE-7937FDAD8FE0} = {0159A132-A3D1-474E-9BC0-90EE78294E9D}
+		{ED427617-82E5-4B33-9740-7A66A9A60AB3} = {0159A132-A3D1-474E-9BC0-90EE78294E9D}
+		{921DFB75-528E-43D0-B1B7-A9CCFFBAC0C7} = {0159A132-A3D1-474E-9BC0-90EE78294E9D}
 	EndGlobalSection
 EndGlobal

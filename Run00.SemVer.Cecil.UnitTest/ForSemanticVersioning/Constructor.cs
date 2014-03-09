@@ -14,10 +14,9 @@ namespace Run00.SemVer.Cecil.UnitTest.ForSemanticVersioning
 			//Arrange
 			var moqRepository = new Mock<IPackageRepository>(MockBehavior.Strict);
 			var moqPackageManager = new Mock<IPackageManager>(MockBehavior.Strict);
-			var moqComparer = new Mock<IContractComparer>(MockBehavior.Strict);
 
 			//Act
-			var result = new SemanticVersioning(moqRepository.Object, moqPackageManager.Object, moqComparer.Object);
+			var result = new SemanticVersioning(moqRepository.Object, moqPackageManager.Object);
 
 			//Assert
 			Assert.IsNotNull(result);
