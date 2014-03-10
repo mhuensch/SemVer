@@ -9,22 +9,18 @@ namespace Run00.SemVer.Cecil
 {
 	public class SemanticVersioning : ISemanticVersioning
 	{
-		public SemanticVersioning(IPackageRepository packageRepository, IPackageManager packageManager)
+		public SemanticVersioning(INuGet nuget)
 		{
-			_packageRepository = packageRepository;
-			_packageManager = packageManager;
+			_nuget = nuget;
 		}
 
 		VersionChange ISemanticVersioning.Calculate(IEnumerable<string> assemblies, string packageId)
 		{
 			var neoDefinitions = GetPackageDefinition(assemblies);
 
-			var paleoPackage = GetLatestPackage(packageId);
-			var paleoAssemblies = GetAssemblies(paleoPackage);
+			var paleoPackage = _nuget.GetLatestPackage(packageId);
+			var paleoAssemblies = _nuget.GetAssemblies(paleoPackage);
 			var paleoDefinitions = GetPackageDefinition(paleoAssemblies);
-
-			var types = paleoDefinitions.TypeDefinitions.Where(t => t.Namespace.StartsWith("System") == false);
-			var types2 = neoDefinitions.TypeDefinitions.Where(t => t.Namespace.StartsWith("System") == false);
 
 			var changes = GetDifferences(neoDefinitions, paleoDefinitions);
 			var newVersion = GetNewVersion(changes, paleoPackage.Version.Version);
@@ -35,34 +31,6 @@ namespace Run00.SemVer.Cecil
 				Old = paleoPackage.Version.Version,
 				New = newVersion
 			};
-
-			//var manifest = Manifest.ReadFrom("path here");
-			//manifest.Save()
-			//var currentPackage = new ZipPackage(nupkgFile.FullName);
-			//ZipFile.ExtractToDirectory(nupkgFile.FullName, "Extracted");
-		}
-
-		private IPackage GetLatestPackage(string packageId)
-		{
-			return _packageRepository.GetPackages()
-				.Where(p => string.Compare(p.Id, packageId, StringComparison.InvariantCultureIgnoreCase) == 0)
-				.OrderBy(p => p.Version)
-				.LastOrDefault();
-		}
-
-		private IEnumerable<string> GetAssemblies(IPackage package)
-		{
-			if (package == null)
-				return Enumerable.Empty<string>();
-
-			var dir = _packageManager.PathResolver.GetPackageDirectory(package);
-
-			if (_packageManager.FileSystem.DirectoryExists(dir) == false)
-				_packageManager.InstallPackage(package, true, false);
-
-			var fullDir = _packageManager.FileSystem.GetFullPath(dir);
-			var assemblies = package.AssemblyReferences.Select(a => Path.Combine(fullDir, a.Path));
-			return assemblies;
 		}
 
 		private PackageDefinition GetPackageDefinition(IEnumerable<string> assemblies)
@@ -154,7 +122,6 @@ namespace Run00.SemVer.Cecil
 			return new Version(paleoVersion.Major, paleoVersion.Minor, paleoVersion.Build + 1, 0);
 		}
 
-		private readonly IPackageRepository _packageRepository;
-		private readonly IPackageManager _packageManager;
+		private readonly INuGet _nuget;
 	}
 }

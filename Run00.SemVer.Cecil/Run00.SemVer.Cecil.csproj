@@ -32,6 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\packages\Castle.Windsor.3.2.1\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.XmlTransform">
       <HintPath>..\packages\Microsoft.Web.Xdt.1.0.0\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
     </Reference>
@@ -52,6 +58,8 @@
       <HintPath>..\packages\NuGet.Core.2.8.0\lib\net40-Client\NuGet.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -60,14 +68,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IDefinitionComparer.cs" />
-    <Compile Include="ContractComparer.cs" />
-    <Compile Include="IContractComparer.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="IConfiguration.cs" />
+    <Compile Include="Installer.cs" />
+    <Compile Include="INuGet.cs" />
+    <Compile Include="IReporter.cs" />
+    <Compile Include="IRunner.cs" />
+    <Compile Include="NuGetConfiguration.cs" />
+    <Compile Include="NuGet.cs" />
     <Compile Include="PackageDefinition.cs" />
+    <Compile Include="Runner.cs" />
     <Compile Include="SemanticVersioning.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MethodDefinitionComparer.cs" />
-    <Compile Include="TypeDefinitionComparer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Run00.SemVer\Run00.SemVer.csproj">

@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Run00.SemVer.Cecil.UnitTest", "Run00.SemVer.Cecil.UnitTest\Run00.SemVer.Cecil.UnitTest.csproj", "{2FF0F639-BDD3-4ECC-AC1A-BDFD12E24C1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Run00.SemVer.Console", "Run00.SemVer.Console\Run00.SemVer.Console.csproj", "{A42E00F4-0FEF-45AC-872E-377C31018CAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Run00.SemVer.WindowsConsole", "Run00.SemVer.Console\Run00.SemVer.WindowsConsole.csproj", "{A42E00F4-0FEF-45AC-872E-377C31018CAD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestArtifacts", "TestArtifacts", "{0159A132-A3D1-474E-9BC0-90EE78294E9D}"
 EndProject

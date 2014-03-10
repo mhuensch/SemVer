@@ -12,16 +12,14 @@ namespace Run00.SemVer.Cecil.UnitTest.ForSemanticVersioning
 		public void WhenValidParameters_ShouldConstruct()
 		{
 			//Arrange
-			var moqRepository = new Mock<IPackageRepository>(MockBehavior.Strict);
-			var moqPackageManager = new Mock<IPackageManager>(MockBehavior.Strict);
+			var moqNuget = new Mock<INuGet>(MockBehavior.Strict);
 
 			//Act
-			var result = new SemanticVersioning(moqRepository.Object, moqPackageManager.Object);
+			var result = new SemanticVersioning(moqNuget.Object);
 
 			//Assert
 			Assert.IsNotNull(result);
-			moqRepository.VerifyAll();
-			moqPackageManager.VerifyAll();
+			moqNuget.VerifyAll();
 		}
 	}
 }

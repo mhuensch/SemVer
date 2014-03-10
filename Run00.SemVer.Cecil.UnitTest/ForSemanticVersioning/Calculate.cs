@@ -13,17 +13,15 @@ namespace Run00.SemVer.Cecil.UnitTest.ForSemanticVersioning
 		public void When_Should()
 		{
 			//Arrange
-			var moqRepository = new Mock<IPackageRepository>(MockBehavior.Strict);
-			var moqPackageManager = new Mock<IPackageManager>(MockBehavior.Strict);
-			var versioning = (ISemanticVersioning)new SemanticVersioning(moqRepository.Object, moqPackageManager.Object);
+			var moqNuGet = new Mock<INuGet>(MockBehavior.Strict);
+			var versioning = (ISemanticVersioning)new SemanticVersioning(moqNuGet.Object);
 
 			//Act
 			var result = versioning.Calculate(null, null);
 
 			//Assert
 			Assert.IsNotNull(null);
-			moqRepository.VerifyAll();
-			moqPackageManager.VerifyAll();
+			moqNuGet.VerifyAll();
 		}
 	}
 }

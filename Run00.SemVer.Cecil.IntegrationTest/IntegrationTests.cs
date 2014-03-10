@@ -11,7 +11,6 @@ extern alias ControlGroup;
 extern alias DeletingClass;
 extern alias RefactoringMethod;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NuGet;
 using Run00.MsTest;
 using System.IO;
 
@@ -141,9 +140,6 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 			Assert.AreEqual("2.0.0.0", result.New.ToString());
 		}
 
-		/// <summary>
-		/// Whens the private method is added_ should be refactor.
-		/// </summary>
 		[TestMethod, CategorizeByConvention]
 		public void WhenPrivateMethodIsAdded_ShouldBeRefactor()
 		{
@@ -199,11 +195,12 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 
 		private ISemanticVersioning BuildVersioning()
 		{
+			//TODO: Use castle windsor to load these items
 			var currentDir = Directory.GetCurrentDirectory();
-			var packageRepository = PackageRepositoryFactory.Default.CreateRepository(currentDir);
-			var packageManager = new PackageManager(packageRepository, Path.Combine(Path.GetTempPath(), "NumericTests"));
-
-			var versioning = (ISemanticVersioning)new SemanticVersioning(packageRepository, packageManager);
+			var installPath = Path.Combine(Path.GetTempPath(), "NumericTests");
+			var config = new NuGetConfiguration() { PackageSource = currentDir, InstallPath = installPath };
+			var nuget = new NuGet(config);
+			var versioning = (ISemanticVersioning)new SemanticVersioning(nuget);
 			return versioning;
 		}
 	}

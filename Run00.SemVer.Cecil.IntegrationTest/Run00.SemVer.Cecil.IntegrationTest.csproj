@@ -68,17 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Artifacts\Test.Sample.AddingClass.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.AddingMethod.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.AddingPrivateMethod.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.AddingProperty.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.ChangingComments.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.ChangingGenericType.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.ChangingMethodSignature.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.ChangingNamespace.1.0.0.0.nupkg" />
     <None Include="Artifacts\Test.Sample.ControlGroup.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.DeletingClass.1.0.0.0.nupkg" />
-    <None Include="Artifacts\Test.Sample.RefactoringMethod.1.0.0.0.nupkg" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
