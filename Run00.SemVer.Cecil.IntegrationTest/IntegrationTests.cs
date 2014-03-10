@@ -141,6 +141,9 @@ namespace Run00.SemVer.Cecil.IntegrationTest
 			Assert.AreEqual("2.0.0.0", result.New.ToString());
 		}
 
+		/// <summary>
+		/// Whens the private method is added_ should be refactor.
+		/// </summary>
 		[TestMethod, CategorizeByConvention]
 		public void WhenPrivateMethodIsAdded_ShouldBeRefactor()
 		{
